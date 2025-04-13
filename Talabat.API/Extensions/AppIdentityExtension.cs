@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Services;
@@ -16,10 +17,13 @@ namespace Talabat.API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddIdentity<AppUser, IdentityRole>()
                             .AddEntityFrameworkStores<AppIdentityDbContext>();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).
                      AddJwtBearer( options =>
                     {
-                        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                        options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuer = true,
                             ValidateAudience = true,
@@ -32,6 +36,7 @@ namespace Talabat.API.Extensions
                     }
 
                 );
+            services.AddAuthorization();
             return services;
         }
     }

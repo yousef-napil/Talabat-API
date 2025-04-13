@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Talabat.Core.Entities.Order_aggregate;
 using Talabat.Core.Entities.ProductModule;
 using Talabat.Repository.Data;
 
@@ -47,6 +48,20 @@ namespace Talabat.Repository
                 dbContext.Products.AddRange(brands);
                 dbContext.SaveChanges();
             }
+            #endregion
+
+            #region DeliveryMethod DataSeed
+
+            if (!dbContext.DeliveryMethods.Any())
+            {
+                // Add your seed data here
+                var DeliveryMethodData = File.ReadAllText("../Talabat.Repository/Data/DataSeed/delivery.json");
+                var DeliveryMethod = JsonSerializer.Deserialize<List<DeliveryMethod>>(DeliveryMethodData);
+                if (DeliveryMethod == null) return;
+                dbContext.DeliveryMethods.AddRange(DeliveryMethod);
+                dbContext.SaveChanges();
+            }
+
             #endregion
         }
     }

@@ -29,10 +29,10 @@ namespace Talabat.Repository.Repositories
         public async Task<IReadOnlyList<T>> GetAllAsync()
         => await dbContext.Set<T>().ToListAsync();
 
-        //public async Task<T> GetByIdAsync(int id)
-        //{
-        //    return await SpecificationEvaluator<T>.GetQuery(dbContext.Set<T>().AsQueryable(), spec).ToListAsync();
-        //}
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await dbContext.Set<T>().FindAsync(id);
+        }
 
         public async Task<IReadOnlyList<T>> GetAllAsyncWithSpec(ISpecifications<T> spec)
         {
@@ -48,6 +48,15 @@ namespace Talabat.Repository.Repositories
         {
             return SpecificationEvaluator<T>.GetQuery(dbContext.Set<T>().AsQueryable(), spec);
         }
+
+        public async Task AddAsync(T item)
+        => await dbContext.Set<T>().AddAsync(item);
+
+        public void Update(T item)
+        => dbContext.Set<T>().Update(item);
+
+        public void Delete(T item)
+        => dbContext.Set<T>().Remove(item);
     }
 }
 
