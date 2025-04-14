@@ -9,6 +9,7 @@ using Talabat.Core.Entities.Order_aggregate;
 using Talabat.Core.Entities.ProductModule;
 using Talabat.Core.Repositories;
 using Talabat.Core.Services;
+using Talabat.Core.Specification;
 
 namespace Talabat.Service
 {
@@ -49,14 +50,17 @@ namespace Talabat.Service
             return Order;
         }
 
-        public Task<Order> GetOrderByIdForUser(string buyerEmail, int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<IReadOnlyList<Order>> GetOrdersForUser(string buyerEmail)
         {
-            throw new NotImplementedException();
+            var spec = new OrderSpecification(buyerEmail);
+            return unitOfWork.Repository<Order>().GetAllAsyncWithSpec(spec);
         }
+
+        public Task<Order> GetOrderByIdForUser(string buyerEmail, int id)
+        {
+            var spec = new OrderSpecification(id, buyerEmail);
+            return unitOfWork.Repository<Order>().GetByIdAsyncWithSpec(spec);
+        }
+
     }
 }
